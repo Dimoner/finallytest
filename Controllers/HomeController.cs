@@ -16,7 +16,7 @@ namespace TestNikita.Controllers
     public HomeController(DataService context) : base(context) { }
 
     [Authorize(Roles = "user")]
-    [HttpGet("history")]
+    [HttpPost("history")]
     public async Task<CommonFormat<IEnumerable<Transfer>>> GetAllTransfers(GetHistory getHistory)
     {
       var result = await db.getTransfers(getHistory);
