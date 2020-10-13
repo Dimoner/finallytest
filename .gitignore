@@ -1,4 +1,5 @@
 /bin
-/ClientApp/node_modules
 /AngularApp
 /obj
+/.idea
+/package-lock.json
