@@ -1,0 +1,3 @@
+[submodule "AngularApp"]
+	path = AngularApp
+	url = https://github.com/brskiy/AngularApp
