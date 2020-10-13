@@ -41,7 +41,7 @@ namespace TestNikita
 
       services.AddSpaStaticFiles(configuration =>
       {
-        configuration.RootPath = "ClientApp/dist/Angular";
+        configuration.RootPath = "AngularApp/dist/Angular";
       });
     }
 
@@ -71,7 +71,7 @@ namespace TestNikita
 
       app.UseSpa(spa =>
       {
-        spa.Options.SourcePath = "ClientApp";
+        spa.Options.SourcePath = "AngularApp";
 
         if (env.IsDevelopment())
         {
