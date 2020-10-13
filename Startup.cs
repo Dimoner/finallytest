@@ -37,6 +37,8 @@ namespace TestNikita
 
       services.AddTransient<DataService>();
 
+      services.AddCors();
+
       services.AddControllers();
 
       services.AddSpaStaticFiles(configuration =>
@@ -54,6 +56,9 @@ namespace TestNikita
       }
 
       app.UseRouting();
+
+      app.UseCors(builder => builder.AllowAnyOrigin());
+
 
       app.UseAuthentication();
       app.UseAuthorization();

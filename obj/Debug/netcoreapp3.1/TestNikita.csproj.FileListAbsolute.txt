@@ -42,14 +42,6 @@ C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\angular.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\e2e\tsconfig.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\package-lock.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\package.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\tsconfig.app.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\tsconfig.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\tsconfig.spec.json
-C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\ClientApp\tslint.json
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.NodeServices.dll
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.SpaServices.dll
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.SpaServices.Extensions.dll
@@ -68,3 +60,11 @@ C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Lo
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\angular.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\e2e\tsconfig.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\package-lock.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\package.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\tsconfig.app.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\tsconfig.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\tsconfig.spec.json
+C:\Users\Dima\Desktop\TestNikita\bin\Debug\netcoreapp3.1\AngularApp\tslint.json
