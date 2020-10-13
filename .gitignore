@@ -1,4 +1,9 @@
 /bin
+<<<<<<< HEAD
 /AngularApp/node_modules
+=======
+>>>>>>> 62f89d66c45eae3afbb3cfad5790a2d0c81ccfbb
 /AngularApp
 /obj
+/.idea
+/package-lock.json
