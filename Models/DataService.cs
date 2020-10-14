@@ -13,13 +13,13 @@ namespace TestNikita.Models
 
     public DataService()
     {
-      CreateConnectionToCluster("Users");
-      CreateConnectionToCluster("Transfers");
+      CreateConnectionToCluster(AppOption.DB_USERS);
+      CreateConnectionToCluster(AppOption.DB_TRANSFERS);
     }
 
     private void CreateConnectionToCluster(string dbName)
     {
-      string connectionString = $"mongodb+srv://nikita:nikita@cluster0.xczbr.mongodb.net/{dbName}?retryWrites=true&w=majority";
+      string connectionString = AppOption.CreateStringConnection(dbName);
 
       var connectionToCluster = new MongoUrlBuilder(connectionString);
 
@@ -27,14 +27,14 @@ namespace TestNikita.Models
 
       IMongoDatabase database = clientCluster.GetDatabase(connectionToCluster.DatabaseName);
 
-      if (dbName == "Transfers")
+      if (dbName == AppOption.DB_TRANSFERS)
       {
-        Transfers = database.GetCollection<Transfer>("Transfers");
+        Transfers = database.GetCollection<Transfer>(AppOption.DB_TRANSFERS);
       }
 
-      if (dbName == "Users")
+      if (dbName == AppOption.DB_USERS)
       {
-        Users = database.GetCollection<User>("Users");
+        Users = database.GetCollection<User>(AppOption.DB_USERS);
       }
     }
 
@@ -48,7 +48,7 @@ namespace TestNikita.Models
         {
           Name = userForCreate.Name,
           Password = userForCreate.Password,
-          Role = "user"
+          Role = AppOption.USER_ROLE
         };
 
         await Users.InsertOneAsync(newUser);
@@ -71,7 +71,7 @@ namespace TestNikita.Models
 
     public async Task<IEnumerable<Transfer>> getTransfers(string userId, string role)
     {
-      if (role == "admin")
+      if (role == AppOption.ADMIN_ROLE)
       {
         return await Transfers.Find(_ => true).ToListAsync();
       }
@@ -81,7 +81,7 @@ namespace TestNikita.Models
 
     public async Task<Transfer> GetTransfer(string sessionId, string role, string transferId)
     {
-      if (role == "admin")
+      if (role == AppOption.ADMIN_ROLE)
       {
         return await Transfers.Find(transfer => transfer.Id == transferId).FirstOrDefaultAsync();
       }
@@ -96,7 +96,7 @@ namespace TestNikita.Models
 
     public async Task Remove(string sessionId, string role, string transferId)
     {
-      if (role == "admin")
+      if (role == AppOption.ADMIN_ROLE)
       {
         await Transfers.DeleteOneAsync(new BsonDocument("_id", new ObjectId(transferId)));
         return;

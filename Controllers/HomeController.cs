@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections;
 
 namespace TestNikita.Controllers
 {
+  
   [ApiController]
   [Route("api/p2p/transfer")]
   public class HomeController : RootController
@@ -16,7 +16,7 @@ namespace TestNikita.Controllers
 
     public HomeController(DataService context) : base(context) { }
 
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpGet("history")]
     public async Task<CommonFormat<IEnumerable<Transfer>>> GetAllTransfers()
     {
@@ -27,11 +27,11 @@ namespace TestNikita.Controllers
       return model;
     }
 
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpGet("history/{transferId}")]
     public async Task<IActionResult> GetTransfer(string transferId)
     {
-      if (string.IsNullOrEmpty(transferId))
+      if (!Helpers.Function.ValidString(transferId))
       {
         return BadRequest(new CommonFormat<object> { Error = "Не корректный id записи", Success = false, Data = null });
       }
@@ -46,13 +46,13 @@ namespace TestNikita.Controllers
       return Json(new CommonFormat<Transfer> { Error = "", Success = true, Data = result });
     }
 
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpPost("create")]
     public async Task<IActionResult> CreateOne(CreateTransfer createTransfer)
     {
-      string validation = ValidationCreatTransfer(createTransfer);
+      string validation = Helpers.Function.ValidationCreatTransfer(createTransfer);
 
-      if (validation != "")
+      if (Helpers.Function.ValidString(validation))
       {
         return BadRequest(new CommonFormat<object> { Error = validation, Success = false, Data = null });
       }
@@ -74,11 +74,12 @@ namespace TestNikita.Controllers
       return Json(new CommonFormat<Transfer> { Error = "", Success = true, Data = transfer });
     }
 
-    [Authorize(Roles = "user, admin")]
+    [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpDelete("delete/{transferId}")]
     public async Task<IActionResult> DeleteOne(string transferId)
     {
-      if (string.IsNullOrEmpty(transferId))
+       
+      if (!Helpers.Function.ValidString(transferId))
       {
         return BadRequest(new CommonFormat<object> { Error = "Не корректный id записи", Success = false, Data = null });
       }
@@ -88,7 +89,7 @@ namespace TestNikita.Controllers
       return Json(new CommonFormat<string> { Error = "", Success = true, Data = "success" });
     }
 
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = AppOption.ADMIN_ROLE)]
     [HttpDelete("delete/all")]
     public async Task<CommonFormat<string>> DeleteAll()
     {
@@ -97,36 +98,5 @@ namespace TestNikita.Controllers
       return new CommonFormat<string> { Error = "", Success = true, Data = "success" };
     }
 
-    private string ValidationCreatTransfer(CreateTransfer createTransfer)
-    {
-      string validation = "";
-
-      if (createTransfer.ExpiryMonth < 1 || createTransfer.ExpiryMonth > 12)
-      {
-        validation += "Неверно указан месяц. ";
-      }
-      else if (createTransfer.ExpiryYear < 2020)
-      {
-        validation += "Неверно указан год. ";
-      }
-      else if (string.IsNullOrEmpty(createTransfer.FullName))
-      {
-        validation += "Укажите имя ";
-      }
-      else if (string.IsNullOrEmpty(createTransfer.RecipientCardNumber) || createTransfer.RecipientCardNumber.Length != 16)
-      {
-        validation += "Неверно указана карта принимающей стороны. ";
-      }
-      else if (string.IsNullOrEmpty(createTransfer.SenderCardNumber) || createTransfer.SenderCardNumber.Length != 16)
-      {
-        validation += "Неверно указана карта отправителя. ";
-      }
-      else if (createTransfer.Sum < 0)
-      {
-        validation += "Сумма должна быть больше 0. ";
-      }
-
-      return validation.Trim();
-    }
   }
 }

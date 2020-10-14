@@ -1,13 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TestNikita.Models;
-using System.Linq;
-using System.Collections.Generic;
 using System;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TestNikita;
 using Microsoft.AspNetCore.Authorization;
 
 namespace TestNikita.Controllers
@@ -20,8 +17,8 @@ namespace TestNikita.Controllers
 
     [HttpPost("createUser")]
     public async Task<IActionResult> CreateUser(CreateUser user)
-    {
-      bool isNotValid = string.IsNullOrEmpty(user.Name) || string.IsNullOrEmpty(user.Password);
+    { 
+      bool isNotValid = !Helpers.Function.ValidString(user.Name) || Helpers.Function.ValidString(user.Password);
 
       if (isNotValid)
       {
@@ -51,8 +48,8 @@ namespace TestNikita.Controllers
 
     [HttpPost("auth")]
     public async Task<IActionResult> Token(Auth authData)
-    {
-      bool isNotValid = string.IsNullOrEmpty(authData.Name) || string.IsNullOrEmpty(authData.Password);
+    { 
+      bool isNotValid = !Helpers.Function.ValidString(authData.Name) || !Helpers.Function.ValidString(authData.Password);
 
       if (isNotValid)
       {
@@ -66,7 +63,7 @@ namespace TestNikita.Controllers
         return BadRequest(new CommonFormat<string> { Error = "Неправильный логин или пароль", Success = false, Data = null });
       }
 
-      var identity = GetIdentity(person);
+      var identity = Helpers.Function.GetIdentity(person);
 
       var now = DateTime.UtcNow;
       // создаем JWT-токен
@@ -87,20 +84,6 @@ namespace TestNikita.Controllers
       };
 
       return Json(response);
-    }
-
-    private ClaimsIdentity GetIdentity(User person)
-    {
-      var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Id),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
-                };
-
-      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-          ClaimsIdentity.DefaultRoleClaimType);
-
-      return claimsIdentity;
     }
   }
 }
