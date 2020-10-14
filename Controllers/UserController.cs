@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TestNikita;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TestNikita.Controllers
 {
@@ -23,6 +24,13 @@ namespace TestNikita.Controllers
       await db.CreateUser(user);
 
       return new CommonFormat<string> { Error = "", Success = true, Data = "success" };
+    }
+
+    [Authorize]
+    [HttpGet("checkToken")]
+    public CommonFormat<string> CheckToken()
+    {
+      return new CommonFormat<string> { Error = "", Success = true, Data = "Токен валиден" };
     }
 
     [HttpPost("auth")]
@@ -51,6 +59,7 @@ namespace TestNikita.Controllers
               claims: identity.Claims,
               expires: now.Add(TimeSpan.FromMinutes(AuthOption.LIFETIME)),
               signingCredentials: new SigningCredentials(AuthOption.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
       var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
       var response = new
