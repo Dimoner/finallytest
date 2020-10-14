@@ -1,7 +1,9 @@
 namespace TestNikita.Models
 {
-  public class User : CreateUser
+  public class AccountInfo
   {
+    public string Name { get; set; }
+
     public string Role { get; set; }
   }
 }

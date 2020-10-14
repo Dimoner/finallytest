@@ -1,7 +1,5 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace TestNikita.Models
 {
@@ -10,10 +8,8 @@ namespace TestNikita.Models
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
 
-    [Display(Name = "Имя")]
     public string Name { get; set; }
 
-    [Display(Name = "Пароль")]
     public string Password { get; set; }
   }
 }

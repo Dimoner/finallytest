@@ -19,23 +19,46 @@ namespace TestNikita.Controllers
     public UserController(DataService context) : base(context) { }
 
     [HttpPost("createUser")]
-    public async Task<CommonFormat<string>> CreateUser(CreateUser user)
+    public async Task<IActionResult> CreateUser(CreateUser user)
     {
-      await db.CreateUser(user);
+      bool isNotValid = string.IsNullOrEmpty(user.Name) || string.IsNullOrEmpty(user.Password);
 
-      return new CommonFormat<string> { Error = "", Success = true, Data = "success" };
+      if (isNotValid)
+      {
+        return BadRequest(new CommonFormat<object> { Error = "Не заполнены поля", Success = false, Data = null });
+      }
+
+      var registerAccount = await db.CreateUser(user);
+
+      if (registerAccount == null)
+      {
+        return BadRequest(new CommonFormat<object> { Error = "Логин занят", Success = false, Data = null });
+      }
+
+      return Json(new CommonFormat<string> { Error = "", Success = true, Data = "Аккаунт успешно создан" });
     }
 
     [Authorize]
-    [HttpGet("checkToken")]
-    public CommonFormat<string> CheckToken()
+    [HttpGet("account")]
+    public async Task<CommonFormat<AccountInfo>> AccountInfo()
     {
-      return new CommonFormat<string> { Error = "", Success = true, Data = "Токен валиден" };
+      User person = await db.GetUser(ClaimsIdentity.DefaultNameClaimType);
+
+      AccountInfo accountInfo = new AccountInfo { Name = person.Name, Role = person.Role };
+
+      return new CommonFormat<AccountInfo> { Error = "", Success = true, Data = accountInfo };
     }
 
     [HttpPost("auth")]
     public async Task<IActionResult> Token(Auth authData)
     {
+      bool isNotValid = string.IsNullOrEmpty(authData.Name) || string.IsNullOrEmpty(authData.Password);
+
+      if (isNotValid)
+      {
+        return BadRequest(new CommonFormat<object> { Error = "Не заполнены поля", Success = false, Data = null });
+      }
+
       User person = await db.GetUser(authData.Name, authData.Password);
 
       if (person == null)
@@ -44,11 +67,6 @@ namespace TestNikita.Controllers
       }
 
       var identity = GetIdentity(person);
-
-      if (identity == null)
-      {
-        return BadRequest(new CommonFormat<string> { Error = "Неправильный логин или пароль", Success = false, Data = null });
-      }
 
       var now = DateTime.UtcNow;
       // создаем JWT-токен
@@ -65,8 +83,7 @@ namespace TestNikita.Controllers
       var response = new
       {
         access_token = encodedJwt,
-        username = identity.Name,
-        userId = person.Id
+        userId = identity.Name
       };
 
       return Json(response);
@@ -74,22 +91,16 @@ namespace TestNikita.Controllers
 
     private ClaimsIdentity GetIdentity(User person)
     {
-      if (person != null)
-      {
-        var claims = new List<Claim>
+      var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Name),
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Id),
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
                 };
 
-        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-            ClaimsIdentity.DefaultRoleClaimType);
+      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+          ClaimsIdentity.DefaultRoleClaimType);
 
-        return claimsIdentity;
-      }
-
-
-      return null;
+      return claimsIdentity;
     }
   }
 }

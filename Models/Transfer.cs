@@ -1,7 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace TestNikita.Models
 {
@@ -13,7 +12,6 @@ namespace TestNikita.Models
     [BsonRepresentation(BsonType.DateTime)]
     public DateTime DocDate { get; set; }
 
-    [Display(Name = "Id пользователя")]
     public string UserId { get; set; }
 
   }

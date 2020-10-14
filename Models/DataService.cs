@@ -38,16 +38,25 @@ namespace TestNikita.Models
       }
     }
 
-    public async Task CreateUser(CreateUser user)
+    public async Task<string> CreateUser(CreateUser userForCreate)
     {
-      User newUser = new User
-      {
-        Name = user.Name,
-        Password = user.Password,
-        Role = "user"
-      };
+      User existUser = await Users.Find(user => user.Name == userForCreate.Name).FirstOrDefaultAsync();
 
-      await Users.InsertOneAsync(newUser);
+      if (existUser == null)
+      {
+        User newUser = new User
+        {
+          Name = userForCreate.Name,
+          Password = userForCreate.Password,
+          Role = "user"
+        };
+
+        await Users.InsertOneAsync(newUser);
+
+        return userForCreate.Name;
+      }
+
+      return null;
     }
 
     public async Task<User> GetUser(string username, string password)
@@ -55,16 +64,29 @@ namespace TestNikita.Models
       return await Users.Find(user => user.Name == username && user.Password == password).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Transfer>> getTransfers(GetHistory getHistory)
+    public async Task<User> GetUser(string userId)
     {
-      var builder = new FilterDefinitionBuilder<Transfer>();
-      var filter = builder.Empty;
-      return await Transfers.Find(transfer => transfer.UserId == getHistory.UserId).ToListAsync();
+      return await Users.Find(new BsonDocument("_id", new ObjectId(userId))).FirstOrDefaultAsync();
     }
 
-    public async Task<Transfer> GetTransfer(GetOneHistory getOneHistory)
+    public async Task<IEnumerable<Transfer>> getTransfers(string userId, string role)
     {
-      return await Transfers.Find(transfer => transfer.Id == getOneHistory.TransferId && transfer.UserId == getOneHistory.UserId).FirstOrDefaultAsync();
+      if (role == "admin")
+      {
+        return await Transfers.Find(_ => true).ToListAsync();
+      }
+
+      return await Transfers.Find(transfer => transfer.UserId == userId).ToListAsync();
+    }
+
+    public async Task<Transfer> GetTransfer(string sessionId, string role, string transferId)
+    {
+      if (role == "admin")
+      {
+        return await Transfers.Find(transfer => transfer.Id == transferId).FirstOrDefaultAsync();
+      }
+
+      return await Transfers.Find(transfer => transfer.Id == transferId && transfer.UserId == sessionId).FirstOrDefaultAsync();
     }
 
     public async Task CreateTransfer(Transfer transfer)
@@ -72,9 +94,15 @@ namespace TestNikita.Models
       await Transfers.InsertOneAsync(transfer);
     }
 
-    public async Task Remove(string id)
+    public async Task Remove(string sessionId, string role, string transferId)
     {
-      await Transfers.DeleteOneAsync(new BsonDocument("_id", new ObjectId(id)));
+      if (role == "admin")
+      {
+        await Transfers.DeleteOneAsync(new BsonDocument("_id", new ObjectId(transferId)));
+        return;
+      }
+
+      await Transfers.DeleteOneAsync(transfer => transfer.Id == transferId && transfer.UserId == sessionId);
     }
 
     public async Task RemoveAll()
