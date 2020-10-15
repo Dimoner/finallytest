@@ -20,7 +20,9 @@ namespace TestNikita.Controllers
     [HttpGet("history")]
     public async Task<CommonFormat<IEnumerable<Transfer>>> GetAllTransfers()
     {
-      var result = await db.getTransfers(ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+      string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+
+      var result = await db.getTransfers(User.Identity.Name, role);
 
       var model = new CommonFormat<IEnumerable<Transfer>> { Error = "", Success = true, Data = result };
 
@@ -36,7 +38,9 @@ namespace TestNikita.Controllers
         return BadRequest(new CommonFormat<object> { Error = "Не корректный id записи", Success = false, Data = null });
       }
 
-      var result = await db.GetTransfer(ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType, transferId);
+      string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+
+      var result = await db.GetTransfer(User.Identity.Name, role, transferId);
 
       if (result == null)
       {
@@ -66,7 +70,7 @@ namespace TestNikita.Controllers
         FullName = createTransfer.FullName,
         DocDate = DateTime.Now,
         Sum = createTransfer.Sum,
-        UserId = ClaimsIdentity.DefaultNameClaimType
+        UserId = User.Identity.Name
       };
 
       await db.CreateTransfer(transfer);
@@ -84,7 +88,9 @@ namespace TestNikita.Controllers
         return BadRequest(new CommonFormat<object> { Error = "Не корректный id записи", Success = false, Data = null });
       }
 
-      await db.Remove(ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType, transferId);
+      string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+
+      await db.Remove(User.Identity.Name, role, transferId);
 
       return Json(new CommonFormat<string> { Error = "", Success = true, Data = "success" });
     }

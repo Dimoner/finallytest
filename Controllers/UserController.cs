@@ -39,7 +39,7 @@ namespace TestNikita.Controllers
     [HttpGet("account")]
     public async Task<CommonFormat<AccountInfo>> AccountInfo()
     {
-      User person = await db.GetUser(ClaimsIdentity.DefaultNameClaimType);
+      User person = await db.GetUser(User.Identity.Name);
 
       AccountInfo accountInfo = new AccountInfo { Name = person.Name, Role = person.Role };
 
