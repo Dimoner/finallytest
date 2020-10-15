@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TestNikita.Controllers
 {
-  
+
   [ApiController]
   [Route("api/p2p/transfer")]
   public class HomeController : RootController
@@ -18,15 +18,21 @@ namespace TestNikita.Controllers
 
     [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpGet("history")]
-    public async Task<CommonFormat<IEnumerable<Transfer>>> GetAllTransfers()
+    public async Task<IActionResult> GetAllTransfers()
     {
       string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
-      var result = await db.getTransfers(User.Identity.Name, role);
+      try
+      {
+        var result = await db.getTransfers(User.Identity.Name, role);
 
-      var model = new CommonFormat<IEnumerable<Transfer>> { Error = "", Success = true, Data = result };
+        return Json(new CommonFormat<IEnumerable<Transfer>> { Error = "", Success = true, Data = result });
+      }
+      catch
+      {
+        return BadRequest(new CommonFormat<object> { Error = "База сломалась", Success = false, Data = null });
+      }
 
-      return model;
     }
 
     [Authorize(Roles = AppOption.COMMON_METHOD)]
@@ -40,14 +46,21 @@ namespace TestNikita.Controllers
 
       string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
-      var result = await db.GetTransfer(User.Identity.Name, role, transferId);
-
-      if (result == null)
+      try
       {
-        return BadRequest(new CommonFormat<object> { Error = "Запись не найдена", Success = false, Data = null });
-      }
+        var result = await db.GetTransfer(User.Identity.Name, role, transferId);
 
-      return Json(new CommonFormat<Transfer> { Error = "", Success = true, Data = result });
+        if (result == null)
+        {
+          return BadRequest(new CommonFormat<object> { Error = "Запись не найдена", Success = false, Data = null });
+        }
+
+        return Json(new CommonFormat<Transfer> { Error = "", Success = true, Data = result });
+      }
+      catch
+      {
+        return BadRequest(new CommonFormat<object> { Error = "База сломалась", Success = false, Data = null });
+      }
     }
 
     [Authorize(Roles = AppOption.COMMON_METHOD)]
@@ -73,16 +86,23 @@ namespace TestNikita.Controllers
         UserId = User.Identity.Name
       };
 
-      await db.CreateTransfer(transfer);
+      try
+      {
+        await db.CreateTransfer(transfer);
 
-      return Json(new CommonFormat<Transfer> { Error = "", Success = true, Data = transfer });
+        return Json(new CommonFormat<Transfer> { Error = "", Success = true, Data = transfer });
+      }
+      catch
+      {
+        return BadRequest(new CommonFormat<object> { Error = "База сломалась", Success = false, Data = null });
+      }
     }
 
     [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpDelete("delete/{transferId}")]
     public async Task<IActionResult> DeleteOne(string transferId)
     {
-       
+
       if (!Helpers.Function.ValidString(transferId))
       {
         return BadRequest(new CommonFormat<object> { Error = "Не корректный id записи", Success = false, Data = null });
@@ -90,18 +110,34 @@ namespace TestNikita.Controllers
 
       string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
-      await db.Remove(User.Identity.Name, role, transferId);
+      try
+      {
+        await db.Remove(User.Identity.Name, role, transferId);
 
-      return Json(new CommonFormat<string> { Error = "", Success = true, Data = "success" });
+        return Json(new CommonFormat<string> { Error = "", Success = true, Data = "success" });
+      }
+      catch
+      {
+        return BadRequest(new CommonFormat<object> { Error = "База сломалась", Success = false, Data = null });
+      }
+
     }
 
     [Authorize(Roles = AppOption.ADMIN_ROLE)]
     [HttpDelete("delete/all")]
-    public async Task<CommonFormat<string>> DeleteAll()
+    public async Task<IActionResult> DeleteAll()
     {
-      await db.RemoveAll();
+      try
+      {
+        await db.RemoveAll();
 
-      return new CommonFormat<string> { Error = "", Success = true, Data = "success" };
+        return Json(new CommonFormat<string> { Error = "", Success = true, Data = "success" });
+      }
+      catch
+      {
+        return BadRequest(new CommonFormat<object> { Error = "База сломалась", Success = false, Data = null });
+      }
+
     }
 
   }

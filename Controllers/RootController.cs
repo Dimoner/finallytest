@@ -4,7 +4,7 @@ using TestNikita.Models;
 namespace TestNikita.Controllers
 {
   [ApiController]
-  public class RootController : Controller
+  public class RootController : BaseController
   {
     public readonly DataService db;
 
