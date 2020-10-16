@@ -18,7 +18,7 @@ namespace TestNikita.Controllers
     [HttpPost("createUser")]
     public async Task<IActionResult> CreateUser(CreateUser user)
     {
-      bool isNotValid = !Helpers.Function.ValidString(user.Name) || Helpers.Function.ValidString(user.Password);
+      bool isNotValid = !Helpers.Function.ValidString(user.Name) || !Helpers.Function.ValidString(user.Password);
 
       if (isNotValid)
       {
