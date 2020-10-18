@@ -96,8 +96,13 @@ namespace TestNikita.Controllers
 
         var response = new
         {
-          access_token = encodedJwt,
-          userId = identity.Name
+          success: true
+          error: ""
+          data:
+          {
+            access_token = encodedJwt,
+            userId = identity.Name
+            }
         };
 
         return Json(response);
