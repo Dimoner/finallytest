@@ -20,7 +20,7 @@ namespace TestNikita.Helpers
       {
         validation += "Неверно указан месяц. ";
       }
-      else if (createTransfer.ExpiryYear < 20 || createTransfer.ExpiryYear > 25)
+      else if (createTransfer.ExpiryYear < 20)
       {
         validation += "Неверно указан год. ";
       } 
