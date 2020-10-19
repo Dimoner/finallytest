@@ -13,6 +13,5 @@ namespace TestNikita.Models
     public DateTime DocDate { get; set; }
 
     public string UserId { get; set; }
-
   }
 }

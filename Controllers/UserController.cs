@@ -94,13 +94,13 @@ namespace TestNikita.Controllers
 
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-        var resp = new
+        var tokenInfo = new TokenInfo
         {
-          access_token = encodedJwt,
-          userId = identity.Name
+          Access_token = encodedJwt,
+          UserId = identity.Name
         };
 
-        var response = new CommonFormat<object> { Error = "", Success = true, Data = resp };
+        var response = new CommonFormat<TokenInfo> { Error = "", Success = true, Data = tokenInfo };
 
         return Json(response);
       }
