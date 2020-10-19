@@ -12,6 +12,6 @@ namespace TestNikita.Models
 
     public string FullName { get; set; }
 
-    public int Sum { get; set; }
+    public double Sum { get; set; }
   }
 }

@@ -105,9 +105,14 @@ namespace TestNikita.Models
       await Transfers.DeleteOneAsync(transfer => transfer.Id == transferId && transfer.UserId == sessionId);
     }
 
-    public async Task RemoveAll()
+    public async Task RemoveAll(string sessionId, string role)
     {
-      await Transfers.DeleteManyAsync(p => true);
+      if(role == AppOption.ADMIN_ROLE)
+      {
+        await Transfers.DeleteManyAsync(p => true);
+      }
+
+      await Transfers.DeleteManyAsync(p => p.UserId == sessionId);
     }
   }
 }

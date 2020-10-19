@@ -123,13 +123,15 @@ namespace TestNikita.Controllers
 
     }
 
-    [Authorize(Roles = AppOption.ADMIN_ROLE)]
+    [Authorize(Roles = AppOption.COMMON_METHOD)]
     [HttpDelete("delete/all")]
     public async Task<IActionResult> DeleteAll()
     {
       try
       {
-        await db.RemoveAll();
+        string role = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
+
+        await db.RemoveAll(User.Identity.Name, role);
 
         return Json(new CommonFormat<string> { Error = "", Success = true, Data = "success" });
       }
